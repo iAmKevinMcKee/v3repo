@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PropertyResource\Pages;
 use App\Filament\Resources\PropertyResource\RelationManagers;
 use App\Models\Property;
+use App\Models\SupportContact;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,11 +24,7 @@ class PropertyResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+            ->schema(Property::getForm());
     }
 
     public static function table(Table $table): Table
@@ -48,7 +46,9 @@ class PropertyResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideOver(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -61,6 +61,7 @@ class PropertyResource extends Resource
     {
         return [
             RelationManagers\PropertyContactsRelationManager::class,
+            RelationManagers\SupportContactsRelationManager::class,
         ];
     }
 
@@ -69,7 +70,8 @@ class PropertyResource extends Resource
         return [
             'index' => Pages\ListProperties::route('/'),
             'create' => Pages\CreateProperty::route('/create'),
-            'edit' => Pages\EditProperty::route('/{record}/edit'),
+            'view' => Pages\ViewProperty::route('/{record}'),
+//            'edit' => Pages\EditProperty::route('/{record}/edit'),
         ];
     }
 }
